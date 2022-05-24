@@ -1,5 +1,5 @@
 import { DefaultEntity } from "../../Domain/Entities/defaultEntity";
-import { AlterationData } from "../../Utils/alterationData";
+import { AlterationData } from "../../Domain/Utils/alterationData";
 import DefaultUsecases from "../../Domain/Usecases/defaultUsecases";
 import { GeneralRepositoryInterface } from "../Protocols/Repositorys/generalRepositoryInterface";
 import { EntityRepositoryInterface } from "../Protocols/Repositorys/entityRepositoryInterface";
@@ -7,7 +7,7 @@ import { EntityRepositoryInterface } from "../Protocols/Repositorys/entityReposi
 
 export class DefaultService implements DefaultUsecases
 {
-    protected dataEntityRepository: EntityRepositoryInterface
+    protected dataEntityRepository: EntityRepositoryInterface;
     protected dataRepository: GeneralRepositoryInterface;
 
     constructor(dataEntityRepository: EntityRepositoryInterface, dataRepository: GeneralRepositoryInterface){
@@ -15,54 +15,58 @@ export class DefaultService implements DefaultUsecases
         this.dataRepository = dataRepository;
     }
 
-    protected getAllData(): DefaultEntity[]{
-        return this.dataEntityRepository.getAllDataOfThisType(this.dataRepository);
+    async getAll(): Promise<DefaultEntity[]>{
+        return await this.dataEntityRepository.getAllEntitysOfThisType(this.dataRepository);
     }
 
-
-    getAll(): DefaultEntity[] {
-        return this.getAllData();
+    async getById(id: number): Promise<DefaultEntity> {
+        return await this.dataEntityRepository.getSomeEntityById(this.dataRepository, id);
     }
 
-    getById(id: number): DefaultEntity {
-        return this.getAllData().filter(element=>element.getId()==id)[0];
+    async create(entity: DefaultEntity): Promise<object> {
+        if(await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId())) return getBoolResponse(false, {"errorType":'ID already exists'});
+
+        var entityId = await this.dataEntityRepository.addNewEntity(this.dataRepository, entity);
+        if(entityId){
+            return getBoolResponse(true, {"entityId":entityId});
+        }else{
+            return getBoolResponse(false);
+        }
     }
 
-    create(entity: DefaultEntity): object {
-        var data: DefaultEntity[] = this.getAllData();
-        if(!entity.getId()) entity.setId(this.dataEntityRepository.getIdToNewEntity(this.dataRepository, null));
-        if(idAlreadyExist(data, entity.getId())) return getBoolResponse(false);
-        data.push(entity);
-        this.dataRepository.setDataInAcess(this.dataEntityRepository.getDataAcessValue(), data);
-        return getBoolResponse(true, {"entityId":entity.getId()});
+    async delete(id: number): Promise<object> {
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, id)) return getBoolResponse(false, {"errorType":'ID do not exists'});
+
+        if (await this.dataEntityRepository.deleteAnEntity(this.dataRepository, id)){
+            return getBoolResponse(true);
+        }else{
+            return getBoolResponse(false, {"errorType": "Persistence Issue..."})
+        }
     }
 
-    delete(id: number): object {
-        var data: DefaultEntity[] = this.getAllData();
-        if(!idAlreadyExist(data, id)) return getBoolResponse(false);
-        data = data.filter(entity=>entity['id']!=id);
-        this.dataRepository.setDataInAcess(this.dataEntityRepository.getDataAcessValue(), data);
-        return getBoolResponse(true);
+    async update(entity: DefaultEntity): Promise<object> {   //@ to aqui no desacoplamento da default service!
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId())) return getBoolResponse(false, {"errorType":'ID do not exists'});
+
+        if (await this.dataEntityRepository.updateAnEntity(this.dataRepository, entity)){
+            return getBoolResponse(true);
+        }else{
+            return getBoolResponse(false, {"errorType": "Persistence Issue..."})
+        }
     }
 
-    update(entity: DefaultEntity): object {
-        if(!this.delete(entity.getId())) return getBoolResponse(false);
-        var data: DefaultEntity[] = this.getAllData();
-        data.push(entity);
-        this.dataRepository.setDataInAcess(this.dataEntityRepository.getDataAcessValue(), data);
-        return getBoolResponse(true);
-    }
-
-    updateProperty(id: number, propertyAlteration: AlterationData): object {
-        var customEntity: DefaultEntity = this.getById(id);
+    async updateProperty(id: number, propertyAlteration: AlterationData): Promise<object> { //@
+        /*
+        var customEntity: DefaultEntity = await this.getById(id);
         if(!customEntity) return getBoolResponse(false);
 
         var property = customEntity[propertyAlteration.getName()];
         type propertyType = typeof property;
 
-        customEntity[propertyAlteration.getName()] = (propertyAlteration.getData() as propertyType); //@
+        customEntity[propertyAlteration.getName()] = (propertyAlteration.getData() as propertyType);
 
         return this.update(customEntity);
+        */
+        return getBoolResponse(false, {"errorType": "Not implemeted..."});
     }
 
 
@@ -70,14 +74,6 @@ export class DefaultService implements DefaultUsecases
 }
 
 
-function idAlreadyExist(data: any[], id: number): boolean{
-    var alreadyExist = false;
-    data.forEach(obj=>{
-        if(obj['id']==id) alreadyExist=true;
-    });
-
-    return alreadyExist;
-}
 
 
 function getBoolResponse(value: boolean, extensionObject: object = null): object{
