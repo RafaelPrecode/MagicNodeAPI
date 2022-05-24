@@ -2,7 +2,7 @@ import BaseJsonControler from "./baseJsonControler";
 import DefaultUsecases from "../../Domain/Usecases/defaultUsecases";
 import { DefaultEntity } from "../../Domain/Entities/defaultEntity";
 import {getRouteLevel, getNotFoundResponseObject, getInvalidParamsResponseObject} from "../../Utils/Route/routeFunctions";
-import { AlterationData } from "../../Utils/alterationData";
+import { AlterationData } from "../../Domain/Utils/alterationData";
 import {removeArgumentsFromQuery, treatQueryToLeaveOnlyArguments} from "../../Utils/Route/queryTreater"
 
 
