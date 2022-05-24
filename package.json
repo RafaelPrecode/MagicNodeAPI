@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "nodemon src/Main/main.ts"
+    "serve": "nodemon src/Main/main.ts",
+    "start-sql": "ts-node src/Main/Factories/RepositoryFactories/sqlFactories.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^17.0.31",
-    "http": "0.0.1-security"
+    "@types/mysql": "^2.15.21",
+    "mysql": "^2.18.1"
   }
 }
