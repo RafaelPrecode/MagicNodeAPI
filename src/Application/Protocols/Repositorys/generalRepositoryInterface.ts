@@ -1,8 +1,10 @@
+import { DefaultEntity } from "../../../Domain/Entities/defaultEntity";
 
 export interface GeneralRepositoryInterface
 {
-    getAllData(): object[];
-    getDataInAcess(dataAcessValue: object): object[];
-    setDataInAcess(acess: object, data: object): void;
+    getDataInAcess(dataAcessValue: object): Promise<object[]>;
+    registryNewEntry(acess: object, data: DefaultEntity, id?: number): Promise<number>;
+    deleteEntryById(acess: object, id: number): Promise<boolean>;
+    updateAnEntry(acess: object, data: DefaultEntity): Promise<boolean>;
 }
 
