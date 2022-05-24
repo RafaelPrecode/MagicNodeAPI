@@ -1,24 +1,15 @@
 import { DefaultEntity } from "../../../../Domain/Entities/defaultEntity";
 import { MagicStyleEntity } from "../../../../Domain/Entities/magicStyleEntity";
-import { BasicGeneralRepository } from "../../../../Application/Protocols/Repositorys/basicGeneralRepository";
+import { BasicFileEntityRepository } from "./basicFileEntityRepository";
 
-export class MagicStyleFileRepository extends BasicGeneralRepository
+
+export class MagicStyleFileRepository extends BasicFileEntityRepository
 {
-    buildEntityArray(data: object[]): DefaultEntity[] {
-        if (!data) return null;
-
-        var allEntitys: DefaultEntity[] = [];
-        data.forEach(obj=>{
-            allEntitys.push(new MagicStyleEntity(obj["id"], obj["name"]));
-        });
-
-        return allEntitys;
+    buildEntity(data: object): DefaultEntity {
+        return new MagicStyleEntity(data["id"], data["name"]);
     }
 
-
-    getDataAcessValue(): object {
+    getBasicDataAcessValue(): object {
         return {'name': "styles"};
     }
-
 }
-

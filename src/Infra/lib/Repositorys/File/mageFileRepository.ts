@@ -1,22 +1,15 @@
+import { GeneralRepositoryInterface } from "../../../../Application/Protocols/Repositorys/generalRepositoryInterface";
 import { DefaultEntity } from "../../../../Domain/Entities/defaultEntity";
 import { MageEntity } from "../../../../Domain/Entities/mageEntity";
-import { BasicGeneralRepository } from "../../../../Application/Protocols/Repositorys/basicGeneralRepository";
+import { BasicFileEntityRepository } from "./basicFileEntityRepository";
 
-export class MageFileRepository extends BasicGeneralRepository
+export class MageFileRepository extends BasicFileEntityRepository
 {
-    buildEntityArray(data: object[]): DefaultEntity[] {
-        if (!data) return null;
-
-        var allEntitys: DefaultEntity[] = [];
-        data.forEach(obj=>{
-            allEntitys.push(new MageEntity(obj["id"], obj["name"], obj["level"],obj["magicsIds"]));
-        });
-
-        return allEntitys;
+    buildEntity(data: object): DefaultEntity {
+        return new MageEntity(data["id"], data["name"], data["level"],data["magicsIds"]);
     }
 
-
-    getDataAcessValue(): object {
+    getBasicDataAcessValue(): object {
         return {'name': "mages"};
     }
 
