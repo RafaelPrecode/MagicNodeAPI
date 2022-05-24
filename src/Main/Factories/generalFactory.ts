@@ -9,12 +9,15 @@ import { MagicService } from "../../Application/Services/magicService";
 import { MagicStyleService } from "../../Application/Services/magicStyleService";
 
 import { FileFactories } from "./RepositoryFactories/fileFactorites";
+import { SqlFactories } from "./RepositoryFactories/sqlFactories";
 
 
 //*@
 //Define choosen factories
 var factories = new FileFactories();
 //
+var factories = new SqlFactories();
+
 
 
 // fabricate everthing
