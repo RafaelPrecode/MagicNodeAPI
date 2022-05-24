@@ -25,24 +25,23 @@ export class MagicService extends DefaultService implements MagicUsecases
     }
 
 
-    getAllMagicFromStyle(styleId: number): MagicEntity[] {
-        var allMagics: MagicEntity[] = this.getAll() as MagicEntity[];
+    async getAllMagicFromStyle(styleId: number): Promise<MagicEntity[]> {
+        var allMagics: MagicEntity[] = await this.getAll() as MagicEntity[];
         return allMagics.filter(magic=>
             magic.getStylesObject().map(s=>s.getId()).includes(styleId)
         );
     }
 
     
-    getUsersFromMagic(magicId: number): MageEntity[] {
-        var allMages: MageEntity[] = this.mageUsecases.getAll() as MageEntity[];
+    async getUsersFromMagic(magicId: number): Promise<MageEntity[]> {
+        var allMages: MageEntity[] = await this.mageUsecases.getAll() as MageEntity[];
         return allMages.filter(mage=>mage.getMagicsIds().includes(magicId)); 
     }
 
 
-    getAll(): DefaultEntity[] {
-        var magics: MagicEntity[] = this.getAllData() as MagicEntity[];
-        var magicResponse: DefaultEntity[] = this.magicStyleUsecases.insertStylesInMagic(magics);
-        return magicResponse;
+    async getAll(): Promise<DefaultEntity[]> {
+        var magics: MagicEntity[] = await super.getAll() as MagicEntity[];
+        return await this.magicStyleUsecases.insertStylesInMagic(magics);
     }
 
 

@@ -7,7 +7,7 @@ class DefaultControler implements ControlerInterface{
         return "";
     }
 
-    public getResponse(): string{
+    public async getResponse(): Promise<string>{
         var allControlers: string[] = Object.keys(routes).slice(1);
         var response: string = "";
         

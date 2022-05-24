@@ -1,11 +1,11 @@
 import { DefaultEntity } from "../Entities/defaultEntity";
-import { AlterationData } from "../../Utils/alterationData";
+import { AlterationData } from "../Utils/alterationData";
 
 export default interface DefaultUsecases{
-    getAll(): DefaultEntity[];
-    getById(id: number): DefaultEntity;
-    create(entity: DefaultEntity): object;
-    delete(id: number): object;
-    update(entity: DefaultEntity): object;
-    updateProperty(id: number, propertyAlteration: AlterationData): object;
+    getAll(): Promise<DefaultEntity[]>;
+    getById(id: number): Promise<DefaultEntity>;
+    create(entity: DefaultEntity): Promise<object>;
+    delete(id: number): Promise<object>;
+    update(entity: DefaultEntity): Promise<object>;
+    updateProperty(id: number, propertyAlteration: AlterationData): Promise<object>;
 }

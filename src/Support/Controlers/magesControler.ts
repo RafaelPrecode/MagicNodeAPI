@@ -44,15 +44,15 @@ export class MagesControler extends DefaultEntityControler{
 
 
 function functionGetMagics(): Function{
-    return function(repos: MageUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getMagicsFromMage(controler.getIdFromQuery(query));
+    return async function(repos: MageUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.getMagicsFromMage(controler.getIdFromQuery(query));
     };
 }
 
 
 function functionGetStylesOfMage(): Function{
-    return function(repos: MageUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getStylesOfMage(controler.getIdFromQuery(query));
+    return async function(repos: MageUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.getStylesOfMage(controler.getIdFromQuery(query));
     };
 }
 

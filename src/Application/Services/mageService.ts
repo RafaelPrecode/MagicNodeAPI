@@ -23,9 +23,9 @@ export class MageService extends DefaultService implements MageUsecases
     }
 
 
-    getMagicsFromMage(id: number): MagicEntity[] {
-        var allMagics = this.magicUsecases.getAll();
-        var selectedMage: MageEntity = this.getById(id) as MageEntity;
+    async getMagicsFromMage(id: number): Promise<MagicEntity[]> {
+        var allMagics = await this.magicUsecases.getAll();
+        var selectedMage: MageEntity = await this.getById(id) as MageEntity;
         if(!selectedMage) return;
         var magicsFromMage: number[] = selectedMage.getMagicsIds();
 
@@ -33,8 +33,8 @@ export class MageService extends DefaultService implements MageUsecases
     }
 
 
-    getStylesOfMage(id: number): MagicStyleEntity[] {
-        var mageMagics = this.getMagicsFromMage(id);
+    async getStylesOfMage(id: number): Promise<MagicStyleEntity[]> {
+        var mageMagics = await this.getMagicsFromMage(id);
         if (!mageMagics) return [];
 
         var allStyles = mageMagics.map(m=>m.getStylesObject());

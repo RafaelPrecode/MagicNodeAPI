@@ -6,7 +6,7 @@ export class HelpControler implements ControlerInterface {
         return "Take your doubts here";
     }
     
-    public getResponse(): string{
+    public async getResponse(): Promise<string>{
         return`
     Welcome!
         `;

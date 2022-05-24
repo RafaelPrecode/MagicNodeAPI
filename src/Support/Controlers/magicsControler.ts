@@ -35,13 +35,13 @@ export class MagicsControler extends DefaultEntityControler{
 }
 
 function functionGetUsersOf(): Function{
-    return function(repos: MagicUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getUsersFromMagic(controler.getIdFromQuery(query));
+    return async function(repos: MagicUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.getUsersFromMagic(controler.getIdFromQuery(query));
     };
 }
 
 function functionGetMagicsOfStyle(): Function{
-    return function(repos: MagicUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getAllMagicFromStyle(controler.getIdFromQuery(query));
+    return async function(repos: MagicUsecases, controler: DefaultEntityControler, query: string):  Promise<object>{
+        return await repos.getAllMagicFromStyle(controler.getIdFromQuery(query));
     };
 }

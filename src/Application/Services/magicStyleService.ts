@@ -11,11 +11,11 @@ export class MagicStyleService extends DefaultService implements MagicStyleUseca
         super(dataEntityRepository, dataRepository);
     }
 
-    public insertStylesInMagic(magics: MagicEntity[]): MagicEntity[] {
+    public async insertStylesInMagic(magics: MagicEntity[]): Promise<MagicEntity[]> {
         var magicResponse: MagicEntity[] = [];
         
         for(let i=0;i<magics.length;i++){
-            magics[i].setStylesObject(this.fetchAllStyleNames(magics[i]));
+            magics[i].setStylesObject(await this.fetchAllStyleNames(magics[i]));
             magics[i].deleteStyleIds();
             magicResponse.push(magics[i]);
         }
@@ -23,8 +23,8 @@ export class MagicStyleService extends DefaultService implements MagicStyleUseca
         return magicResponse;
     }
 
-    fetchAllStyleNames(magic: MagicEntity): MagicStyleEntity[]{
-        var allStyles = this.getAll();
+    async fetchAllStyleNames(magic: MagicEntity): Promise<MagicStyleEntity[]>{
+        var allStyles = await this.getAll();
         var stylesFromMagic = allStyles.filter(style=>
             magic.getStyleIds().includes(style.getId())
         );

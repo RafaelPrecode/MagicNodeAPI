@@ -7,25 +7,25 @@ import {removeArgumentsFromQuery, treatQueryToLeaveOnlyArguments} from "../../Ut
 
 
 const defaultRouteSections = {
-    "": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getAll();
+    "": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.getAll();
     },
-    "get": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.getById(controler.getIdFromQuery(query));
+    "get": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.getById(controler.getIdFromQuery(query));
     },
-    "create": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
+    "create": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
         if(!controler.getEntityFromQuery(query)) return getInvalidParamsResponseObject();
-        return repos.create(controler.getEntityFromQuery(query));
+        return await repos.create(controler.getEntityFromQuery(query));
     },
-    "delete": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.delete(controler.getIdFromQuery(query));
+    "delete": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.delete(controler.getIdFromQuery(query));
     },
-    "update": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
+    "update": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
         if(!controler.getEntityFromQuery(query)) return getInvalidParamsResponseObject();
-        return repos.update(controler.getEntityFromQuery(query));
+        return await repos.update(controler.getEntityFromQuery(query));
     },
-    "alterate": function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): object{
-        return repos.updateProperty(controler.getIdFromQuery(query), controler.getPropertyAlterationFromQuery(query));
+    "alterate": async function(repos: DefaultUsecases, controler: DefaultEntityControler, query: string): Promise<object>{
+        return await repos.updateProperty(controler.getIdFromQuery(query), controler.getPropertyAlterationFromQuery(query));
     }
 };
 
@@ -44,12 +44,13 @@ export default abstract class DefaultEntityControler extends BaseJsonControler{
 
     public abstract getControlerDescription(): string;
 
-    protected getObjectResponse(query: string="") : object{
+    protected async getObjectResponse(query: string="") : Promise<object>{
         var functionName: string = getRouteLevel(removeArgumentsFromQuery(query), 0).replace("/", "");
-        var dataFunction = this.routeSections[functionName.toLowerCase()];
+        var dataFunction: (repos:DefaultUsecases, controler: DefaultEntityControler, query: string)=>object =
+            this.routeSections[functionName.toLowerCase()];
 
         if(!dataFunction) return getNotFoundResponseObject();
-        return dataFunction(this.defaultUsecases, this, query);
+        return await dataFunction(this.defaultUsecases, this, query);       //@ não tem efeito?
     }
 
 
