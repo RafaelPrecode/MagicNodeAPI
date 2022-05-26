@@ -5,6 +5,9 @@ import { MagicStyleFileRepository } from "../../../Infra/lib/Repositorys/File/ma
 import { EntityRepositoryInterface } from "../../../Application/Protocols/Repositorys/entityRepositoryInterface";
 import { GeneralRepositoryInterface } from "../../../Application/Protocols/Repositorys/generalRepositoryInterface";
 import { RepositoryFactoriesInterface } from "./repositoryFactoriesInterface";
+import { MageRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/mageRepositoryInterface";
+import { MagicRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/magicRepositoryInterface";
+import { StyleRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/styleRepositoryInterface";
 
 
 export class FileFactories implements RepositoryFactoriesInterface{
@@ -12,15 +15,15 @@ export class FileFactories implements RepositoryFactoriesInterface{
         return new GeneralFileRepository('src/Infra/db/File/fileDataBank.json');
     }
     
-    makeMageRepository(): EntityRepositoryInterface{
+    makeMageRepository(): MageRepositoryInterface{
         return new MageFileRepository();
     }
     
-    makeMagicRepository(): EntityRepositoryInterface{
+    makeMagicRepository(): MagicRepositoryInterface{
         return new MagicFileRepository();
     }
     
-    makeStyleRepository(): EntityRepositoryInterface{
+    makeStyleRepository(): StyleRepositoryInterface{
         return new MagicStyleFileRepository();
     }
 }

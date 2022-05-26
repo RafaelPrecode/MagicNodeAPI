@@ -10,6 +10,9 @@ import { MagicStyleService } from "../../Application/Services/magicStyleService"
 
 import { FileFactories } from "./RepositoryFactories/fileFactorites";
 import { SqlFactories } from "./RepositoryFactories/sqlFactories";
+import { MagicRepositoryInterface } from "../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/magicRepositoryInterface";
+import { MageRepositoryInterface } from "../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/mageRepositoryInterface";
+import { StyleRepositoryInterface } from "../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/styleRepositoryInterface";
 
 
 //*@
@@ -22,11 +25,20 @@ var factories = new SqlFactories();
 
 // fabricate everthing
 var fileRepository = factories.makeGeneralRepository();
-var styleService = new MagicStyleService(factories.makeStyleRepository(), fileRepository);
-var magicService = new MagicService(factories.makeMagicRepository(), factories.makeGeneralRepository(), styleService);
-var mageService = new MageService(factories.makeMageRepository(), fileRepository, styleService);
-magicService.injectMageService(mageService);
-mageService.injectMagicService(magicService);
+
+var mageRepository: MageRepositoryInterface = factories.makeMageRepository();
+var magicRepository: MagicRepositoryInterface = factories.makeMagicRepository();
+var styleRepository: StyleRepositoryInterface = factories.makeStyleRepository();
+
+var styleService = new MagicStyleService(styleRepository, fileRepository);
+var magicService = new MagicService(magicRepository, fileRepository);
+var mageService = new MageService(mageRepository, fileRepository);
+
+magicService.injectMageRepository(mageRepository);
+magicService.injectStyleRepository(styleRepository);
+
+mageService.injectMagicRepository(magicRepository);
+mageService.injectStyleRepository(styleRepository);
 //
 
 

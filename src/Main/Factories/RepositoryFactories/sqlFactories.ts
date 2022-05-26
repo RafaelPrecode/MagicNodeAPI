@@ -6,6 +6,9 @@ import { GeneralRepositoryInterface } from "../../../Application/Protocols/Repos
 import { GeneralSQLRepository } from "../../../Infra/lib/Repositorys/SQL/generalSQLRepository";
 import { MageSQLRepository } from "../../../Infra/lib/Repositorys/SQL/mageSQLRepository";
 import { MagicSQLRepository } from "../../../Infra/lib/Repositorys/SQL/magicSQLRepository";
+import { MageRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/mageRepositoryInterface";
+import { MagicRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/magicRepositoryInterface";
+import { StyleRepositoryInterface } from "../../../Application/Protocols/Repositorys/EntitysRepositoryInterfaces/styleRepositoryInterface";
 
 
 
@@ -20,15 +23,15 @@ export class SqlFactories implements RepositoryFactoriesInterface{
         });
     }
     
-    makeMageRepository(): EntityRepositoryInterface{
+    makeMageRepository(): MageRepositoryInterface{
         return new MageSQLRepository();
     }
     
-    makeMagicRepository(): EntityRepositoryInterface{
+    makeMagicRepository(): MagicRepositoryInterface{
         return new MagicSQLRepository();
     }
     
-    makeStyleRepository(): EntityRepositoryInterface{
+    makeStyleRepository(): StyleRepositoryInterface{
         return new MagicStyleSQLRepository();
     }
 }
