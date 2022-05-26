@@ -17,7 +17,6 @@ export abstract class BasicFileEntityRepository extends BasicEntityRepository
         return allEntitys.some(entity=>entity.getId()==id);
     }
 
-
     abstract getBasicDataAcessValue(): object;
     abstract buildEntity(data: object): DefaultEntity;
 }

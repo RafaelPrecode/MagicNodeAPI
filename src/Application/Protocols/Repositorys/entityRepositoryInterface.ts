@@ -7,7 +7,7 @@ export interface EntityRepositoryInterface{
     addNewEntity(repository: GeneralRepositoryInterface, entity: DefaultEntity): Promise<number>;
     deleteAnEntity(repository: GeneralRepositoryInterface, id: number): Promise<boolean>;
     updateAnEntity(repository: GeneralRepositoryInterface, entity: DefaultEntity): Promise<boolean>;
-
+    
     getAllEntitysOfThisType(repository: GeneralRepositoryInterface): Promise<DefaultEntity[]>;
     getSomeEntityById(repository: GeneralRepositoryInterface, id: number): Promise<DefaultEntity>;
 

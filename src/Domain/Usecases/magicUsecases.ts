@@ -3,6 +3,6 @@ import { MagicEntity } from "../Entities/magicEntity";
 import DefaultUsecases from "./defaultUsecases";
 
 export default interface MagicUsecases extends DefaultUsecases{
-    getUsersFromMagic(magicId: number): Promise<MageEntity[]>;
-    getAllMagicFromStyle(styleId: number): Promise<MagicEntity[]>;
+    getUsersFromMagic(magicId: number): Promise<object>;
+    getAllMagicFromStyle(styleId: number): Promise<object>;
 }

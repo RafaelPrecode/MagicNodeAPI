@@ -9,7 +9,7 @@ export abstract class BasicEntityRepository implements EntityRepositoryInterface
     }
 
     async getSomeEntityById(repository: GeneralRepositoryInterface, id: number): Promise<DefaultEntity> {
-        return this.buildEntityFromData((await this.getSomeDataById(repository, id))[0]);        
+        return this.buildEntityFromData((await this.getSomeDataById(repository, id)));        
     }
 
     async addNewEntity(repository: GeneralRepositoryInterface, entity: DefaultEntity): Promise<number>{

@@ -21,7 +21,6 @@ export abstract class BasicSQLEntityRepository extends BasicEntityRepository
         return await repository.updateAnEntry(this.getUpdateDataAcessValue(entity), entity);
     }
 
-    
     async idAlreadyExist(repo: GeneralRepositoryInterface, id: number): Promise<boolean>{
         if(!id) return false;
         return !!(await this.getSomeDataById(repo, id));
