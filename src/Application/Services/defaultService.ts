@@ -3,6 +3,7 @@ import { AlterationData } from "../../Domain/Utils/alterationData";
 import DefaultUsecases from "../../Domain/Usecases/defaultUsecases";
 import { GeneralRepositoryInterface } from "../Protocols/Repositorys/generalRepositoryInterface";
 import { EntityRepositoryInterface } from "../Protocols/Repositorys/entityRepositoryInterface";
+import { ServiceUtil } from "./serviceUtil";
 
 
 export class DefaultService implements DefaultUsecases
@@ -24,33 +25,36 @@ export class DefaultService implements DefaultUsecases
     }
 
     async create(entity: DefaultEntity): Promise<object> {
-        if(await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId())) return getBoolResponse(false, {"errorType":'ID already exists'});
+        if(await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId()))
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getIdDoesExistErrorReponse());
 
         var entityId = await this.dataEntityRepository.addNewEntity(this.dataRepository, entity);
         if(entityId){
-            return getBoolResponse(true, {"entityId":entityId});
+            return ServiceUtil.getBoolResponse(true, {"entityId":entityId});
         }else{
-            return getBoolResponse(false);
+            return ServiceUtil.getBoolResponse(false);
         }
     }
 
     async delete(id: number): Promise<object> {
-        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, id)) return getBoolResponse(false, {"errorType":'ID do not exists'});
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, id))
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getIdDoNotExistErrorReponse());
 
         if (await this.dataEntityRepository.deleteAnEntity(this.dataRepository, id)){
-            return getBoolResponse(true);
+            return ServiceUtil.getBoolResponse(true);
         }else{
-            return getBoolResponse(false, {"errorType": "Persistence Issue..."})
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getPersistenceErrorReponse())
         }
     }
 
-    async update(entity: DefaultEntity): Promise<object> {   //@ to aqui no desacoplamento da default service!
-        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId())) return getBoolResponse(false, {"errorType":'ID do not exists'});
+    async update(entity: DefaultEntity): Promise<object> {
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, entity.getId()))
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getIdDoNotExistErrorReponse());
 
         if (await this.dataEntityRepository.updateAnEntity(this.dataRepository, entity)){
-            return getBoolResponse(true);
+            return ServiceUtil.getBoolResponse(true);
         }else{
-            return getBoolResponse(false, {"errorType": "Persistence Issue..."})
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getPersistenceErrorReponse())
         }
     }
 
@@ -66,20 +70,10 @@ export class DefaultService implements DefaultUsecases
 
         return this.update(customEntity);
         */
-        return getBoolResponse(false, {"errorType": "Not implemeted..."});
+        return ServiceUtil.getBoolResponse(false, {"errorType": "Not implemeted..."});
     }
 
 
 
 }
 
-
-
-
-function getBoolResponse(value: boolean, extensionObject: object = null): object{
-    var reponse = {"operationWasSuccessful": value};
-    if(extensionObject)
-        Object.assign(reponse, extensionObject);
-
-    return reponse;
-}

@@ -1,57 +1,46 @@
-import { MageEntity } from "../../Domain/Entities/mageEntity";
-import { MagicEntity } from "../../Domain/Entities/magicEntity";
-import { MagicStyleEntity } from "../../Domain/Entities/magicStyleEntity";
 import { DefaultService } from "./defaultService";
 import { GeneralRepositoryInterface } from "../Protocols/Repositorys/generalRepositoryInterface";
 import { EntityRepositoryInterface } from "../Protocols/Repositorys/entityRepositoryInterface";
 import MageUsecases from "../../Domain/Usecases/mageUsecases";
-import DefaultUsecases from "../../Domain/Usecases/defaultUsecases";
-import MagicUsecases from "../../Domain/Usecases/magicUsecases";
+import { MageRepositoryInterface } from "../Protocols/Repositorys/EntitysRepositoryInterfaces/mageRepositoryInterface";
+import { MagicRepositoryInterface } from "../Protocols/Repositorys/EntitysRepositoryInterfaces/magicRepositoryInterface";
+import { StyleRepositoryInterface } from "../Protocols/Repositorys/EntitysRepositoryInterfaces/styleRepositoryInterface";
+import { ServiceUtil } from "./serviceUtil";
 
 
 export class MageService extends DefaultService implements MageUsecases
 {
-    private magicUsecases: DefaultUsecases
+    private magicRepository: MagicRepositoryInterface;
+    private mageRepository: MageRepositoryInterface;
+    private styleRepository: StyleRepositoryInterface;
 
-    constructor(dataEntityRepository: EntityRepositoryInterface, dataRepository: GeneralRepositoryInterface, magicService: DefaultUsecases){
+    constructor(dataEntityRepository: EntityRepositoryInterface, dataRepository: GeneralRepositoryInterface){
         super(dataEntityRepository, dataRepository);
-        this.magicUsecases = magicService;
+        this.mageRepository = dataEntityRepository as MageRepositoryInterface;
     }
 
-    injectMagicService(magicUsecases: MagicUsecases){
-        this.magicUsecases = magicUsecases;
+    injectMagicRepository(magicRepository: MagicRepositoryInterface){
+        this.magicRepository = magicRepository;
     }
 
-
-    async getMagicsFromMage(id: number): Promise<MagicEntity[]> {
-        var allMagics = await this.magicUsecases.getAll();
-        var selectedMage: MageEntity = await this.getById(id) as MageEntity;
-        if(!selectedMage) return;
-        var magicsFromMage: number[] = selectedMage.getMagicsIds();
-
-        return allMagics.filter(magic=>magicsFromMage.includes(magic.getId())) as MagicEntity[];
+    injectStyleRepository(styleRepository: StyleRepositoryInterface){
+        this.styleRepository = styleRepository;
     }
 
 
-    async getStylesOfMage(id: number): Promise<MagicStyleEntity[]> {
-        var mageMagics = await this.getMagicsFromMage(id);
-        if (!mageMagics) return [];
+    async getMagicsFromMage(id: number): Promise<object> {
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, id))
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getIdDoNotExistErrorReponse());
 
-        var allStyles = mageMagics.map(m=>m.getStylesObject());
-        return combineAsOneObject(allStyles);
+        return await this.mageRepository.fetchMagicsFromMage(this.dataRepository, this.magicRepository, id);
+    }
+
+
+    async getStylesOfMage(id: number): Promise<object> {
+        if(! await this.dataEntityRepository.idAlreadyExist(this.dataRepository, id))
+            return ServiceUtil.getBoolResponse(false, ServiceUtil.getIdDoNotExistErrorReponse());
+
+        return await this.mageRepository.fetchStylesFromMage(this.dataRepository, this.magicRepository, this.styleRepository, id);
     }
 }
 
-
-function combineAsOneObject(styles: MagicStyleEntity[][]): MagicStyleEntity[]{
-    var final: MagicStyleEntity[] = [];
-    
-    styles.forEach(_style=>{
-        final = final.concat(_style);
-    });
-
-    let ids = final.map(o => o.getId())
-    final = final.filter((f, index) => !ids.includes(f.getId(), index + 1));
-    final = final.sort((s1,s2)=>s1.getId()-s2.getId());
-    return final;
-}
